@@ -63,7 +63,7 @@
     Process treeProcess = new Process();
     Process deleteProcess = new Process();
 
-    void DeleteInstallation()
+    async Task DeleteInstallation()
     {
         if (_installing == Installing.inactive)
         {
@@ -75,7 +75,12 @@
         }
         else
         {
-            Error = "Cannot Delete until installation is finished installing!";
+            await InvokeAsync(() =>
+            {
+                Error = "Cannot Delete until installation is finished installing!";
+                Message = string.Empty;
+                StateHasChanged();
+            });
         }
     }
 
