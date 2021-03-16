@@ -1,0 +1,40 @@
+﻿#/bin/bash
+
+echo "Starting Tesseract"
+ls -la
+echo "Making tesseract directory"
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/tesseract
+echo "Listing made directory (tesseract)"
+ls -la /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/tesseract
+echo "Changing to Tessearct directory"
+cd /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/tesseract
+wget -q -O tesseract-tools-android.zip https://github.com/rmtheis/tess-two/archive/master.zip
+unzip tesseract-tools-android.zip
+rm tesseract-tools-android.zip
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/tesseract
+cp -a /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/tesseract/* /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/tesseract/src/mapped/tesseract/
+echo "Starting opencv4android"
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/opencv4android
+cd /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/opencv4android
+wget -O OpenCV-android-sdk.3.4.3.zip https://github.com/Xamtasia/opencv4android/archive/v3.4.3.zip
+unzip OpenCV-android-sdk.3.4.3.zip
+rm OpenCV-android-sdk.3.4.3.zip
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/opencv4android
+cp -a /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/opencv4android/* /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/opencv4android/src/mapped/opencv4android/
+echo "Starting android-ndk"
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/android-ndk
+cd /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/android-ndk
+wget -q -O android-ndk.zip https://dl.google.com/android/repository/android-ndk-r22-linux-x86_64.zip
+unzip android-ndk.zip
+rm android-ndk.zip
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/android-ndk
+cp -a /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/android-ndk/* /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/android-ndk/src/mapped/android-ndk/
+echo "Starting openalpr-master"
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/openalpr-master
+cd /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/openalpr-master
+wget -O openalpr-master.zip https://github.com/openalpr/openalpr/archive/master.zip
+unzip openalpr-master.zip
+rm openalpr-master.zip
+mkdir -p /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/openalpr-master
+cp -a /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/openalpr-master/* /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/src/mapped/openalpr-master/src/mapped/openalpr-master/
+echo "Finished"

@@ -15,13 +15,14 @@
 <div>
     <button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
 </div>
-<div>@Error</div>
-<div class="scroll">
-    <pre style="color:white;">
+<div style="background-color:black;padding:4px;">
+    <div class="scroll">
+        <pre style="color:white;">
     @Message
     </pre>
+    </div>
+    <div style="color:red">@Error</div>
 </div>
-
 
 @code {
 
@@ -32,7 +33,8 @@
 
     private void InstallLibrariesIntoDirectory()
     {
-        Message = @"Downloading ...";
+        Message = @"Downloading ...
+";
 
         LaunchProcess();
 
@@ -90,7 +92,9 @@
         process.Exited += new System.EventHandler(process_Exited);
 
         process.StartInfo.FileName = "/bin/bash";
-        process.StartInfo.Arguments = $"-c \"/scripts/downloadandunpacklibraries\"";
+        //process.StartInfo.Arguments = $"-c \"/scripts/downloadandunpacklibraries\"";
+        // /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory
+        process.StartInfo.Arguments = $"-c \"/Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/script\"";
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.RedirectStandardOutput = true;
@@ -103,20 +107,33 @@
         //process.WaitForExit();
     }
 
-    void process_Exited(object sender, EventArgs e)
+    async void process_Exited(object sender, EventArgs e)
     {
-        Error = "Process Exited.";
-
+        await InvokeAsync(() =>
+        {
+            Error = "Process Exited.";
+            StateHasChanged();
+        });
     }
 
-    void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    async void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        Error = e.Data;
+        await InvokeAsync(() =>
+        {
+            Error = e.Data;
+            StateHasChanged();
+        });
     }
 
-    void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    async void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        Message += $"{e.Data}\n\n";
+        await InvokeAsync(() =>
+        {
+            string msg = Message;
+            msg += $"{e.Data}\n\n";
+            Message = msg;
+            StateHasChanged();
+        });
     }
 
     protected override Task OnInitializedAsync()
