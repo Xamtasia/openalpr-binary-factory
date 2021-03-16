@@ -230,13 +230,13 @@
     {
         if (Console == ConsoleManager.DuShStar)
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
                 Error = "'du -sh *' Process Exited.";
                 StateHasChanged();
 
 
-                Task.Delay(5000);
+                await Task.Delay(5000);
                 ShowDuShStar();
             });
         }
