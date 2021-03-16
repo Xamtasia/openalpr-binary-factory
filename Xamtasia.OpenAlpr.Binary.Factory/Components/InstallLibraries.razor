@@ -17,7 +17,7 @@
 </div>
 <div>@Error</div>
 <div class="scroll">
-    <pre>
+    <pre style="color:white;">
     @Message
     </pre>
 </div>
@@ -40,6 +40,7 @@
                     FileName = "/bin/bash",
                     Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                 }
