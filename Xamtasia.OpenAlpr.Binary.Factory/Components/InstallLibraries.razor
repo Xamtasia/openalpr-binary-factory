@@ -165,9 +165,6 @@
             {
                 Error = "'tree /src/*' Process Exited.";
                 StateHasChanged();
-
-                Task.Delay(500);
-                ShowTree();
             });
         }
     }
@@ -237,6 +234,10 @@
             {
                 Error = "'du -sh *' Process Exited.";
                 StateHasChanged();
+
+
+                Task.Delay(500);
+                ShowDuShStar();
             });
         }
     }
