@@ -92,9 +92,8 @@
         process.Exited += new System.EventHandler(process_Exited);
 
         process.StartInfo.FileName = "/bin/bash";
-        //process.StartInfo.Arguments = $"-c \"/scripts/downloadandunpacklibraries\"";
-        // /Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory
-        process.StartInfo.Arguments = $"-c \"/Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/script\"";
+        process.StartInfo.Arguments = $"-c \"/scripts/downloadandunpacklibraries\"";
+        // process.StartInfo.Arguments = $"-c \"/Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/script\"";
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.RedirectStandardOutput = true;
