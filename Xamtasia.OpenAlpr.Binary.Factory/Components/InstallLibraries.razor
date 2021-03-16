@@ -52,6 +52,7 @@
 
     void DuShStarProcess()
     {
+        duShStarProcess = new Process();
         duShStarProcess.EnableRaisingEvents = true;
         duShStarProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(DuShStarProcess_OutputDataReceived);
         duShStarProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(DuShStarProcess_ErrorDataReceived);
