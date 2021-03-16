@@ -3,7 +3,11 @@
 <div>
     <button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
 </div>
-<div>@Message</div>
+<div>
+    <pre>
+    @Message
+    </pre>
+</div>
 
 
 @code {
@@ -23,7 +27,7 @@
                     //FileName = "/bin/bash", 
                     //Arguments = $"-c \"{escapedArgs}\"", 					  
                     FileName = "/bin/bash",
-                    Arguments = $"-c \"/scripts/echotest\"",
+                    Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
