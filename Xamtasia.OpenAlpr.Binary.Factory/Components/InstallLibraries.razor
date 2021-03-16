@@ -272,7 +272,7 @@
                 StateHasChanged();
 
                 await Task.Delay(1000);
-                if (Console == ConsoleManager.DuShStar)
+                if (Console == ConsoleManager.DuShStar && _dushstaring != DushStar.inactive)
                 {
                     ShowDuShStar();
                 }
@@ -294,7 +294,7 @@
 
     async void DuShStarProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (Console == ConsoleManager.DuShStar)
+        if (Console == ConsoleManager.DuShStar && _dushstaring != DushStar.inactive)
         {
             await InvokeAsync(() =>
             {
