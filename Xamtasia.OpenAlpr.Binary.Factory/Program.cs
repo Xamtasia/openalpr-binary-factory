@@ -20,7 +20,12 @@ namespace Xamtasia.OpenAlpr.Binary.Factory
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>()
+#if DEBUG
+                    ; // from previous code-line
+#else
+                    .UseUrls(urls: new String[] { "http://*:80", "http://*:443" }); ;
+#endif
                 });
     }
 }
