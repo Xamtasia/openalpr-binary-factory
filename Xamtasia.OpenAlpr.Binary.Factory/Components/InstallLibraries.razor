@@ -16,16 +16,13 @@
 
     private void InstallLibrariesIntoDirectory()
     {
-        Message = @"Install Button Clicked ";
+        Message = @"Install Button Clicked\n\n";
         try
         {
-            string file = "/scripts/echotest";
             var process = new Process()
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    //FileName = "/bin/bash", 
-                    //Arguments = $"-c \"{escapedArgs}\"", 					  
                     FileName = "/bin/bash",
                     Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
                     RedirectStandardOutput = true,
