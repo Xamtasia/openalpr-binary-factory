@@ -287,6 +287,7 @@
 
     void InstallProcess()
     {
+        installProcess = new Process();
         installProcess.EnableRaisingEvents = true;
         installProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(installProcess_OutputDataReceived);
         installProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(installProcess_ErrorDataReceived);
