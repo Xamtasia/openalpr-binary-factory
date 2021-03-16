@@ -165,6 +165,9 @@
             {
                 Error = "'tree /src/*' Process Exited.";
                 StateHasChanged();
+
+                Task.Delay(500);
+                ShowTree();
             });
         }
     }
