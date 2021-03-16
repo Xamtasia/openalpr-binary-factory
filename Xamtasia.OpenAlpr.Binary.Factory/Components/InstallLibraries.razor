@@ -41,10 +41,13 @@
                     Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    RedirectStandardInput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                 }
             };
+
+            process.EnableRaisingEvents = true;
 
             process.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
             {
