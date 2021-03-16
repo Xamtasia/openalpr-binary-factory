@@ -13,10 +13,9 @@
     }
 </style>
 <div>
-    <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show du -sh *</button>
-    <button style="        float: right;
-        margin: 10px;
-" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+    <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/*'</button>
+    <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
+    <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
 </div>
 <div style="background-color:black;padding:4px;">
     <div class="scroll">
@@ -32,7 +31,8 @@
     enum ConsoleManager
     {
         Installer,
-        DuShStar
+        DuShStar,
+        Tree
     }
 
     string Message { get; set; }
@@ -41,11 +41,81 @@
 
     Process installProcess = new Process();
     Process duShStarProcess = new Process();
+    Process treeProcess = new Process();
+
+    void ShowTree()
+    {
+        Console = ConsoleManager.DuShStar;
+        Message = @"User$ tree /src/*
+";
+        TreeProcess();
+    }
+
+    void TreeProcess()
+    {
+        treeProcess = new Process();
+        treeProcess = new Process();
+        treeProcess.EnableRaisingEvents = true;
+        treeProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(TreeProcess_OutputDataReceived);
+        treeProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(TreeProcess_ErrorDataReceived);
+        treeProcess.Exited += new System.EventHandler(TreeProcess_Exited);
+
+        treeProcess.StartInfo.FileName = "/bin/bash";
+        treeProcess.StartInfo.Arguments = $"-c \"/scripts/treestar\"";
+        treeProcess.StartInfo.UseShellExecute = false;
+        treeProcess.StartInfo.RedirectStandardError = true;
+        treeProcess.StartInfo.RedirectStandardOutput = true;
+
+        treeProcess.Start();
+        treeProcess.BeginErrorReadLine();
+        treeProcess.BeginOutputReadLine();
+
+        //below line is optional if we want a blocking call
+        //process.WaitForExit();
+    }
+
+    async void TreeProcess_Exited(object sender, EventArgs e)
+    {
+        if (Console == ConsoleManager.Tree)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = "'tree /src/*' Process Exited.";
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void TreeProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.Tree)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = e.Data;
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void TreeProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.Tree)
+        {
+            await InvokeAsync(() =>
+            {
+                string msg = Message;
+                msg += $"{e.Data}\n\n";
+                Message = msg;
+                StateHasChanged();
+            });
+        }
+    }
 
     private void ShowDuShStar()
     {
         Console = ConsoleManager.DuShStar;
-        Message = @">du -sh *
+        Message = @"User$ du -sh /src/*
 ";
         DuShStarProcess();
     }
