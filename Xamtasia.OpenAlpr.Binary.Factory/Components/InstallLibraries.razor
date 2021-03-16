@@ -1,29 +1,50 @@
 ﻿@using System.Diagnostics;
 
-<button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+<div>
+    <button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+</div>
+<div>@Message</div>
+
 
 @code {
 
+    string Message { get; set; }
 
     private void InstallLibrariesIntoDirectory()
     {
-        var process = new Process()
+        Message += @"Install Button Clicked\n\n<br />";
+        try
         {
-            StartInfo = new ProcessStartInfo
+            var process = new Process()
             {
-                //FileName = "/bin/bash", 
-                //Arguments = $"-c \"{escapedArgs}\"", 					  
-                FileName = "/scripts/echotest",
-                Arguments = string.Empty,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            }
-        };
+                StartInfo = new ProcessStartInfo
+                {
+                    //FileName = "/bin/bash", 
+                    //Arguments = $"-c \"{escapedArgs}\"", 					  
+                    FileName = "/scripts/echotest",
+                    Arguments = string.Empty,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                }
+            };
 
-        process.Start();
-        string result = process.StandardOutput.ReadToEnd();
-        process.WaitForExit();
+            process.Start();
+            string result = process.StandardOutput.ReadToEnd();
+            Message += $"StdOut:\n\n<br />\n\n{result}";
+            process.WaitForExit();
+        }
+        catch(Exception ex)
+        {
+            Message += $"Error:\n\n<br />\n\n{ex.Message}\n\n<br>\n\n{ex.InnerException.Message}";
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Message = string.Empty;
+
+        return base.OnInitializedAsync();
     }
 
 }
