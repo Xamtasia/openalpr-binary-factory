@@ -1,0 +1,29 @@
+﻿@using System.Diagnostics;
+
+<button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+
+@code {
+
+
+    private void InstallLibrariesIntoDirectory()
+    {
+        var process = new Process()
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                //FileName = "/bin/bash", 
+                //Arguments = $"-c \"{escapedArgs}\"", 					  
+                FileName = "/scripts/echotest",
+                Arguments = string.Empty,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            }
+        };
+
+        process.Start();
+        string result = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+    }
+
+}
