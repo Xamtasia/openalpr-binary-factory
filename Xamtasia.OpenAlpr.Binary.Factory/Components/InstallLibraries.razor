@@ -15,14 +15,15 @@
         Message = @"Install Button Clicked ";
         try
         {
+            string file = "/scripts/echotest";
             var process = new Process()
             {
                 StartInfo = new ProcessStartInfo
                 {
                     //FileName = "/bin/bash", 
                     //Arguments = $"-c \"{escapedArgs}\"", 					  
-                    FileName = "/scripts/echotest",
-                    Arguments = string.Empty,
+                    FileName = "/bin/bash /scripts/echotest",
+                    Arguments = $"-c \"{file}\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
