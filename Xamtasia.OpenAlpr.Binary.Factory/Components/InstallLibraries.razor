@@ -1,9 +1,22 @@
 ﻿@using System.Diagnostics;
 
+<style>
+    div.scroll {
+        margin: 4px, 4px;
+        padding: 4px;
+        background-color: black;
+        color:white;
+        width: 100%;
+        height: 800px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>
 <div>
     <button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
 </div>
-<div>
+<div>@Error</div>
+<div class="scroll">
     <pre>
     @Message
     </pre>
@@ -12,46 +25,54 @@
 
 @code {
 
-        string Message { get; set; }
+    string Message { get; set; }
+    string Error { get; set; }
 
-        private void InstallLibrariesIntoDirectory()
+    private void InstallLibrariesIntoDirectory()
+    {
+        Message = @"Install Button Clicked\n\n";
+        try
         {
-            Message = @"Install Button Clicked\n\n";
-            try
+            var process = new Process()
             {
-                var process = new Process()
+                StartInfo = new ProcessStartInfo
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "/bin/bash",
-                        Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                    }
-                };
-
-                process.Start();
-
-                while (process.StandardOutput.Peek() >= 0)
-                {
-                    Message += $"{process.StandardOutput.ReadLine()}\n\n";
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
                 }
+            };
 
-
-                //string result = process.StandardOutput.ReadToEnd();
-                //Message += $"StdOut: {result}";
-                process.WaitForExit();
-            }
-            catch(Exception ex)
+            process.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
             {
-                Message += $"Error: {ex.Message} ";
-            }
+                Message += $"{e.Data}\n\n";
+            });
+            process.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
+            {
+                Error = e.Data;
+            });
+
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            //process.Start();
+            //string result = process.StandardOutput.ReadToEnd();
+            //Message += $"StdOut: {result}";
+            //process.WaitForExit();
         }
+        catch (Exception ex)
+        {
+            Message += $"Error: {ex.Message} ";
+        }
+    }
 
     protected override Task OnInitializedAsync()
     {
         Message = string.Empty;
+        Error = string.Empty;
 
         return base.OnInitializedAsync();
     }
