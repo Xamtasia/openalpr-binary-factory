@@ -306,6 +306,7 @@
         if (_installing == Installing.inactive)
         {
             _installing = Installing.active;
+            _installMessage = string.Empty;
             Message = @"Downloading ...
 ";
             Error = string.Empty;
@@ -315,6 +316,7 @@
         {
             await InvokeAsync(() =>
             {
+                Message = _installMessage;
                 Error = string.Empty;
                 StateHasChanged();
             });
