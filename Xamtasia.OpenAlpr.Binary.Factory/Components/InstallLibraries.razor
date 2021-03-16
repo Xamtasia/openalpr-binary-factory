@@ -49,6 +49,8 @@
     string Error { get; set; }
     ConsoleManager Console { get; set; }
 
+    string _installMessage = string.Empty;
+
     Process installProcess = new Process();
     Process duShStarProcess = new Process();
     Process treeProcess = new Process();
@@ -264,19 +266,20 @@
 
     private async Task InstallLibrariesIntoDirectory()
     {
+        Console = ConsoleManager.Installer;
+
         if (_installing == Installing.inactive)
         {
-            Console = ConsoleManager.Installer;
+
             Message = @"Downloading ...
 ";
             InstallProcess();
         }
         else
         {
-
             await InvokeAsync(() =>
             {
-                Error = "You cannot start an installation while one is in progress, please wait!";
+                Error = string.Empty;
                 StateHasChanged();
             });
         }
@@ -311,6 +314,7 @@
             await InvokeAsync(() =>
             {
                 _installing = Installing.inactive;
+                _installMessage = string.Empty;
                 Error = "Install Process Exited.";
                 StateHasChanged();
             });
@@ -335,9 +339,8 @@
         {
             await InvokeAsync(() =>
             {
-                string msg = Message;
-                msg += $"{e.Data}\n";
-                Message = msg;
+                _installMessage += $"{e.Data}\n";
+                Message = _installMessage;
                 StateHasChanged();
             });
         }
