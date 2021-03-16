@@ -12,7 +12,7 @@
 
     private void InstallLibrariesIntoDirectory()
     {
-        Message += @"Install Button Clicked\n\n<br />";
+        Message = @"Install Button Clicked ";
         try
         {
             var process = new Process()
@@ -31,12 +31,12 @@
 
             process.Start();
             string result = process.StandardOutput.ReadToEnd();
-            Message += $"StdOut:\n\n<br />\n\n{result}";
+            Message += $"StdOut: {result}";
             process.WaitForExit();
         }
         catch(Exception ex)
         {
-            Message += $"Error:\n\n<br />\n\n{ex.Message}\n\n<br>\n\n{ex.InnerException.Message}";
+            Message += $"Error: {ex.Message} ";
         }
     }
 
