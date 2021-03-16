@@ -13,7 +13,10 @@
     }
 </style>
 <div>
-    <button @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+    <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show du -sh *</button>
+    <button style="        float: right;
+        margin: 10px;
+" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
 </div>
 <div style="background-color:black;padding:4px;">
     <div class="scroll">
@@ -26,113 +29,153 @@
 
 @code {
 
-    string Message { get; set; }
-    string Error { get; set; }
-
-    Process process = new Process();
-
-    private void InstallLibrariesIntoDirectory()
+    enum ConsoleManager
     {
-        Message = @"Downloading ...
-";
-
-        LaunchProcess();
-
-        return;
-
-        try
-        {
-            var process = new Process()
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                }
-            };
-
-            process.EnableRaisingEvents = true;
-
-            process.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
-            {
-                Message += $"{e.Data}\n\n";
-            });
-            process.ErrorDataReceived += new DataReceivedEventHandler((s, e) =>
-            {
-                Error = e.Data;
-            });
-
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-
-            //process.Start();
-            //string result = process.StandardOutput.ReadToEnd();
-            //Message += $"StdOut: {result}";
-            //process.WaitForExit();
-        }
-        catch (Exception ex)
-        {
-            Message += $"Error: {ex.Message} ";
-        }
+        Installer,
+        DuShStar
     }
 
+    string Message { get; set; }
+    string Error { get; set; }
+    ConsoleManager Console { get; set; }
 
+    Process installProcess = new Process();
+    Process duShStarProcess = new Process();
 
-    void LaunchProcess()
+    private void ShowDuShStar()
     {
-        process.EnableRaisingEvents = true;
-        process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(process_OutputDataReceived);
-        process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(process_ErrorDataReceived);
-        process.Exited += new System.EventHandler(process_Exited);
+        Console = ConsoleManager.Installer;
+        Message = @">du -sh *
+";
+        DuShStarProcess();
+    }
 
-        process.StartInfo.FileName = "/bin/bash";
-        process.StartInfo.Arguments = $"-c \"/scripts/downloadandunpacklibraries\"";
+    void DuShStarProcess()
+    {
+        duShStarProcess.EnableRaisingEvents = true;
+        duShStarProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(DuShStarProcess_OutputDataReceived);
+        duShStarProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(DuShStarProcess_ErrorDataReceived);
+        duShStarProcess.Exited += new System.EventHandler(DuShStarProcess_Exited);
+
+        duShStarProcess.StartInfo.FileName = "/bin/bash";
+        duShStarProcess.StartInfo.Arguments = $"-c \"/scripts/dushstar\"";
         // process.StartInfo.Arguments = $"-c \"/Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/script\"";
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.RedirectStandardOutput = true;
+        duShStarProcess.StartInfo.UseShellExecute = false;
+        duShStarProcess.StartInfo.RedirectStandardError = true;
+        duShStarProcess.StartInfo.RedirectStandardOutput = true;
 
-        process.Start();
-        process.BeginErrorReadLine();
-        process.BeginOutputReadLine();
+        duShStarProcess.Start();
+        duShStarProcess.BeginErrorReadLine();
+        duShStarProcess.BeginOutputReadLine();
 
         //below line is optional if we want a blocking call
         //process.WaitForExit();
     }
 
-    async void process_Exited(object sender, EventArgs e)
+    async void DuShStarProcess_Exited(object sender, EventArgs e)
     {
-        await InvokeAsync(() =>
+        if (Console == ConsoleManager.DuShStar)
         {
-            Error = "Process Exited.";
-            StateHasChanged();
-        });
+            await InvokeAsync(() =>
+            {
+                Error = "'du -sh *' Process Exited.";
+                StateHasChanged();
+            });
+        }
     }
 
-    async void process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    async void DuShStarProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        await InvokeAsync(() =>
+        if (Console == ConsoleManager.DuShStar)
         {
-            Error = e.Data;
-            StateHasChanged();
-        });
+            await InvokeAsync(() =>
+            {
+                Error = e.Data;
+                StateHasChanged();
+            });
+        }
     }
 
-    async void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    async void DuShStarProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        await InvokeAsync(() =>
+        if (Console == ConsoleManager.DuShStar)
         {
-            string msg = Message;
-            msg += $"{e.Data}\n\n";
-            Message = msg;
-            StateHasChanged();
-        });
+            await InvokeAsync(() =>
+            {
+                string msg = Message;
+                msg += $"{e.Data}\n\n";
+                Message = msg;
+                StateHasChanged();
+            });
+        }
+    }
+
+    private void InstallLibrariesIntoDirectory()
+    {
+        Console = ConsoleManager.Installer;
+        Message = @"Downloading ...
+";
+        InstallProcess();
+    }
+
+    void InstallProcess()
+    {
+        installProcess.EnableRaisingEvents = true;
+        installProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(installProcess_OutputDataReceived);
+        installProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(installProcess_ErrorDataReceived);
+        installProcess.Exited += new System.EventHandler(installProcess_Exited);
+
+        installProcess.StartInfo.FileName = "/bin/bash";
+        installProcess.StartInfo.Arguments = $"-c \"/scripts/downloadandunpacklibraries\"";
+        // process.StartInfo.Arguments = $"-c \"/Users/developer/source/Xamtasia.OpenAlpr.Binary.Factory/script\"";
+        installProcess.StartInfo.UseShellExecute = false;
+        installProcess.StartInfo.RedirectStandardError = true;
+        installProcess.StartInfo.RedirectStandardOutput = true;
+
+        installProcess.Start();
+        installProcess.BeginErrorReadLine();
+        installProcess.BeginOutputReadLine();
+
+        //below line is optional if we want a blocking call
+        //process.WaitForExit();
+    }
+
+    async void installProcess_Exited(object sender, EventArgs e)
+    {
+        if (Console == ConsoleManager.Installer)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = "Install Process Exited.";
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void installProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.Installer)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = e.Data;
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void installProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.Installer)
+        {
+            await InvokeAsync(() =>
+            {
+                string msg = Message;
+                msg += $"{e.Data}\n\n";
+                Message = msg;
+                StateHasChanged();
+            });
+        }
     }
 
     protected override Task OnInitializedAsync()
