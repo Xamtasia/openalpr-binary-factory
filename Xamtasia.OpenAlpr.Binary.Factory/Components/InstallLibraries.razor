@@ -29,6 +29,14 @@
 
 @code {
 
+    enum Installing
+    {
+        active,
+        inactive
+    }
+
+    private Installing _installing = Installing.inactive;
+
     enum ConsoleManager
     {
         Installer,
@@ -254,12 +262,24 @@
         }
     }
 
-    private void InstallLibrariesIntoDirectory()
+    private async Task InstallLibrariesIntoDirectory()
     {
-        Console = ConsoleManager.Installer;
-        Message = @"Downloading ...
+        if (_installing == Installing.inactive)
+        {
+            Console = ConsoleManager.Installer;
+            Message = @"Downloading ...
 ";
-        InstallProcess();
+            InstallProcess();
+        }
+        else
+        {
+
+            await InvokeAsync(() =>
+            {
+                Error = "You cannot start an installation while one is in progress, please wait!";
+                StateHasChanged();
+            });
+        }
     }
 
     void InstallProcess()
@@ -290,6 +310,7 @@
         {
             await InvokeAsync(() =>
             {
+                _installing = Installing.inactive;
                 Error = "Install Process Exited.";
                 StateHasChanged();
             });
