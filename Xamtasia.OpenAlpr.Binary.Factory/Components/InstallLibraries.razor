@@ -12,35 +12,42 @@
 
 @code {
 
-    string Message { get; set; }
+        string Message { get; set; }
 
-    private void InstallLibrariesIntoDirectory()
-    {
-        Message = @"Install Button Clicked\n\n";
-        try
+        private void InstallLibrariesIntoDirectory()
         {
-            var process = new Process()
+            Message = @"Install Button Clicked\n\n";
+            try
             {
-                StartInfo = new ProcessStartInfo
+                var process = new Process()
                 {
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                }
-            };
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "/bin/bash",
+                        Arguments = $"-c \"/scripts/downloadandunpacklibraries\"",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    }
+                };
 
-            process.Start();
-            string result = process.StandardOutput.ReadToEnd();
-            Message += $"StdOut: {result}";
-            process.WaitForExit();
+                process.Start();
+
+                while (process.StandardOutput.Peek() >= 0)
+                {
+                    Message += $"{process.StandardOutput.ReadLine()}\n\n";
+                }
+
+
+                //string result = process.StandardOutput.ReadToEnd();
+                //Message += $"StdOut: {result}";
+                process.WaitForExit();
+            }
+            catch(Exception ex)
+            {
+                Message += $"Error: {ex.Message} ";
+            }
         }
-        catch(Exception ex)
-        {
-            Message += $"Error: {ex.Message} ";
-        }
-    }
 
     protected override Task OnInitializedAsync()
     {
