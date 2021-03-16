@@ -65,11 +65,18 @@
 
     void DeleteInstallation()
     {
-        Console = ConsoleManager.DeleteInstallation;
-        Message = @"User$ rm -rf /src/*
+        if (_installing == Installing.inactive)
+        {
+            Console = ConsoleManager.DeleteInstallation;
+            Message = @"User$ rm -rf /src/*
 ";
-        Error = string.Empty;
-        DeleteProcess();
+            Error = string.Empty;
+            DeleteProcess();
+        }
+        else
+        {
+            Error = "Cannot Delete until installation is finished installing!";
+        }
     }
 
     void DeleteProcess()
