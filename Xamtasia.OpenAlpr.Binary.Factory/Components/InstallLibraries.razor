@@ -13,7 +13,8 @@
     }
 </style>
 <div>
-    <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/*'</button>
+    <button style="float:right;margin:10px;" @onclick="DeleteInstallation">Delete Installation</button>
+    <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
     <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
     <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
 </div>
@@ -32,7 +33,8 @@
     {
         Installer,
         DuShStar,
-        Tree
+        Tree,
+        DeleteInstallation
     }
 
     string Message { get; set; }
@@ -42,11 +44,82 @@
     Process installProcess = new Process();
     Process duShStarProcess = new Process();
     Process treeProcess = new Process();
+    Process deleteProcess = new Process();
+
+    void DeleteInstallation()
+    {
+        Console = ConsoleManager.DeleteInstallation;
+        Message = @"User$ rm -rf /src/*
+";
+        DeleteProcess();
+    }
+
+    void DeleteProcess()
+    {
+        deleteProcess = new Process();
+        deleteProcess = new Process();
+        deleteProcess = new Process();
+        deleteProcess.EnableRaisingEvents = true;
+        deleteProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(DeleteProcess_OutputDataReceived);
+        deleteProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(DeleteProcess_ErrorDataReceived);
+        deleteProcess.Exited += new System.EventHandler(DeleteProcess_Exited);
+
+        deleteProcess.StartInfo.FileName = "/bin/bash";
+        deleteProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
+        deleteProcess.StartInfo.UseShellExecute = false;
+        deleteProcess.StartInfo.RedirectStandardError = true;
+        deleteProcess.StartInfo.RedirectStandardOutput = true;
+
+        deleteProcess.Start();
+        deleteProcess.BeginErrorReadLine();
+        deleteProcess.BeginOutputReadLine();
+
+        //below line is optional if we want a blocking call
+        //process.WaitForExit();
+    }
+
+    async void DeleteProcess_Exited(object sender, EventArgs e)
+    {
+        if (Console == ConsoleManager.Tree)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = "'rm -rf /src/*' Process Exited.";
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void DeleteProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.Tree)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = e.Data;
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void DeleteProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.Tree)
+        {
+            await InvokeAsync(() =>
+            {
+                string msg = Message;
+                msg += $"{e.Data}\n";
+                Message = msg;
+                StateHasChanged();
+            });
+        }
+    }
 
     void ShowTree()
     {
         Console = ConsoleManager.Tree;
-        Message = @"User$ tree /src/*
+        Message = @"User$ tree /src/mapped/*
 ";
         TreeProcess();
     }
@@ -105,7 +178,7 @@
             await InvokeAsync(() =>
             {
                 string msg = Message;
-                msg += $"{e.Data}\n\n";
+                msg += $"{e.Data}\n";
                 Message = msg;
                 StateHasChanged();
             });
@@ -174,7 +247,7 @@
             await InvokeAsync(() =>
             {
                 string msg = Message;
-                msg += $"{e.Data}\n\n";
+                msg += $"{e.Data}\n";
                 Message = msg;
                 StateHasChanged();
             });
@@ -242,7 +315,7 @@
             await InvokeAsync(() =>
             {
                 string msg = Message;
-                msg += $"{e.Data}\n\n";
+                msg += $"{e.Data}\n";
                 Message = msg;
                 StateHasChanged();
             });
