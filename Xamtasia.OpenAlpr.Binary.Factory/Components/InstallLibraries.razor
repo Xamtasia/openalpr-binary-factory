@@ -75,8 +75,10 @@
         }
         else
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
+                _dushstaring = DushStar.inactive;
+                await Task.Delay(1500);
                 Error = "Cannot Delete until installation is finished installing!";
                 Message = string.Empty;
                 StateHasChanged();
@@ -269,7 +271,7 @@
                 // Error = "'du -sh *' Process Exited.";
                 StateHasChanged();
 
-                await Task.Delay(2000);
+                await Task.Delay(1000);
                 if (Console == ConsoleManager.DuShStar)
                 {
                     ShowDuShStar();
