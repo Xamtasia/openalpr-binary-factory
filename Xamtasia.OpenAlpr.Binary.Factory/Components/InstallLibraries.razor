@@ -61,7 +61,7 @@
         <div class="labels pipeseparator">|</div>
         <div id="InstallLibrariesPanel_Libraries_AndroidNDK" class="labels">Android NDK</div>
         <div class="labels pipeseparator">|</div>
-        <div class="labels">Tesseract</div>
+        <div id="InstallLibrariesPanel_Libraries_Tesseract" class="labels">Tesseract</div>
         <div class="labels pipeseparator">|</div>
         <div id="InstallLibrariesPanel_Libraries_OpenALPR" class="labels">OpenALPR</div>
     </div>
@@ -150,9 +150,6 @@
 
     async Task GetContainerSettings()
     {
-        //Console = ConsoleManager.DeleteInstallation;
-        Message = @"In Container Settings: 
-";
         Error = string.Empty;
         GetContainerSettingsProcess();
     }
