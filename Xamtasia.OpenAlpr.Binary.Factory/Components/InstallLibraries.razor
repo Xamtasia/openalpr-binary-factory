@@ -1,5 +1,6 @@
 ﻿@using System.Diagnostics;
 @using Newtonsoft.Json
+@inject IJSRuntime JS
 
 
 <style>
@@ -17,7 +18,6 @@
 
         .InstallLibrariesPanel > .InstallLibrariesPanel_Libraries {
             order: 1;
-            color: red;
         }
 
         .InstallLibrariesPanel > .InstallLibrariesPanel_Legend {
@@ -57,7 +57,7 @@
         MODULES
     </div>
     <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
-        <div class="labels">OpenCV4Android</div>
+        <div id="InstallLibrariesPanel_Libraries_OpenCV4Android" class="labels">OpenCV4Android</div>
         <div class="labels pipeseparator">|</div>
         <div class="labels">Android NDK</div>
         <div class="labels pipeseparator">|</div>
@@ -223,7 +223,7 @@
     {
         if (Console == ConsoleManager.DeleteInstallation)
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 await UpdateSystemState(e.Data);
             });
@@ -232,14 +232,36 @@
 
     async Task UpdateSystemState(string json)
     {
-        // THis is the fallback working commit
+        // This is the fallback working commit
         string msg = Message;
         msg += $"{json}\n";
         Message = msg;
 
-        var newobj = JsonConvert.DeserializeObject<ContainerState>(json);
+        var containerstate = JsonConvert.DeserializeObject<ContainerState>(json);
 
-        Message = JsonConvert.SerializeObject(newobj);
+        /*
+        await JS.InvokeVoidAsync(
+            "handleInsertInnerHtml",
+            "notesPane",
+            model.notes);
+        */
+        // handleChangeStyleColor
+        if (containerstate.IsAndroidNDKInstalled)
+        {
+            await JS.InvokeVoidAsync(
+                "handleChangeStyleColor",
+                "InstallLibrariesPanel_Libraries_OpenCV4Android",
+                "green");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync(
+                "handleChangeStyleColor",
+                "InstallLibrariesPanel_Libraries_OpenCV4Android",
+                "red");
+        }
+
+        Message = JsonConvert.SerializeObject(containerstate);
 
         StateHasChanged();
     }
@@ -247,6 +269,9 @@
     // ------------------------------------------------------------------------------------------
     async Task DeleteInstallation()
     {
+        if (!await JS.InvokeAsync<bool>("confirm", $"Are you sure that you want to delete this installation?"))
+            return;
+
         if (_installing == Installing.inactive)
         {
             Console = ConsoleManager.DeleteInstallation;
@@ -588,6 +613,11 @@
         string newJson = "{ \"IsTesseractInstalled\":true,\"IsOpenCV4AndroidInstalled\":true,\"IsAndroidNDKInstalled\":true,\"IsOpenALPRInstalled\":true}";
 
         var newobj = JsonConvert.DeserializeObject<ContainerState>(newJson);
+
+        /*
+        if (!await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete this option?"))
+            return;
+        */
 
         return base.OnInitializedAsync();
     }
