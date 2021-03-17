@@ -236,6 +236,11 @@
         string msg = Message;
         msg += $"{json}\n";
         Message = msg;
+
+        var newobj = JsonConvert.DeserializeObject<ContainerState>(json);
+
+        Message = JsonConvert.SerializeObject(newobj);
+
         StateHasChanged();
     }
 
