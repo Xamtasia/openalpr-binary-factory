@@ -212,7 +212,7 @@
         {
             await InvokeAsync(() =>
             {
-                Error = e.Data;
+                DebugError = e.Data;
                 StateHasChanged();
             });
         }
@@ -224,6 +224,7 @@
         {
             await InvokeAsync(() =>
             {
+                Debug = e.Data;
                 string msg = Message;
                 msg += $"{e.Data}\n";
                 Message = msg;
