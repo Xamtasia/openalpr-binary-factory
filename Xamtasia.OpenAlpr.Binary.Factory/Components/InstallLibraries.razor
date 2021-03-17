@@ -221,7 +221,6 @@
 
     async void GetContainerSettingsProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        // this is the fallback working commit
         if (Console == ConsoleManager.DeleteInstallation)
         {
             await InvokeAsync(async() =>
@@ -233,6 +232,7 @@
 
     async Task UpdateSystemState(string json)
     {
+        // THis is the fallback working commit
         string msg = Message;
         msg += $"{json}\n";
         Message = msg;
