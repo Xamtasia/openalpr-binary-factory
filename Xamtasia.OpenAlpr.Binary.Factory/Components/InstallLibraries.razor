@@ -221,6 +221,7 @@
 
     async void GetContainerSettingsProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
+        // this is the fallback working commit
         if (Console == ConsoleManager.DeleteInstallation)
         {
             await InvokeAsync(() =>
