@@ -144,7 +144,7 @@
 
     bool _isTesseractInstalled;
 
-    Process isTesseractInstalledProcess = new Process();
+    Process getSystemStateProcess = new Process();
 
     #endregion
 
@@ -158,27 +158,28 @@
 
     public void GetContainerStateProcess()
     {
-        isTesseractInstalledProcess = new Process();
-        isTesseractInstalledProcess.EnableRaisingEvents = true;
-        isTesseractInstalledProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(IsTesseractInstalled_OutputDataReceived);
-        isTesseractInstalledProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(IsTesseractInstalled_ErrorDataReceived);
-        isTesseractInstalledProcess.Exited += new System.EventHandler(IsTesseractInstalledProcess_Exited);
+        getSystemStateProcess = new Process();
+        getSystemStateProcess.EnableRaisingEvents = true;
+        getSystemStateProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetSystemStateProcess_OutputDataReceived);
+        getSystemStateProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetSystemStateProcess_ErrorDataReceived);
+        getSystemStateProcess.Exited += new System.EventHandler(GetSystemStateProcess_Exited);
 
-        isTesseractInstalledProcess.StartInfo.FileName = "/bin/bash";
-        isTesseractInstalledProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
-        isTesseractInstalledProcess.StartInfo.UseShellExecute = false;
-        isTesseractInstalledProcess.StartInfo.RedirectStandardError = true;
-        isTesseractInstalledProcess.StartInfo.RedirectStandardOutput = true;
+        getSystemStateProcess.StartInfo.FileName = "/bin/bash";
+        //getSystemStateProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
+        getSystemStateProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
+        getSystemStateProcess.StartInfo.UseShellExecute = false;
+        getSystemStateProcess.StartInfo.RedirectStandardError = true;
+        getSystemStateProcess.StartInfo.RedirectStandardOutput = true;
 
-        isTesseractInstalledProcess.Start();
-        isTesseractInstalledProcess.BeginErrorReadLine();
-        isTesseractInstalledProcess.BeginOutputReadLine();
+        getSystemStateProcess.Start();
+        getSystemStateProcess.BeginErrorReadLine();
+        getSystemStateProcess.BeginOutputReadLine();
 
         //below line is optional if we want a blocking call
         //process.WaitForExit();
     }
 
-    async void IsTesseractInstalledProcess_Exited(object sender, EventArgs e)
+    async void GetSystemStateProcess_Exited(object sender, EventArgs e)
     {
         await InvokeAsync(() =>
         {
@@ -187,7 +188,7 @@
         });
     }
 
-    async void IsTesseractInstalled_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    async void GetSystemStateProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
         await InvokeAsync(() =>
         {
@@ -196,7 +197,7 @@
         });
     }
 
-    async void IsTesseractInstalled_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    async void GetSystemStateProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
         await InvokeAsync(() =>
         {
