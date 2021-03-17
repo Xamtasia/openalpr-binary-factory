@@ -1,30 +1,82 @@
 ﻿@using System.Diagnostics;
 
 <style>
+
+    .InstallLibrariesPanel {
+        display: flex;
+        flex-direction:column;
+        background-color: lightblue;
+    }
+
+    .InstallLibrariesPanel > .InstallLibrariesPanel_Title
+    {
+        order: 0;
+        font-weight:bold;
+    }
+    .InstallLibrariesPanel > .InstallLibrariesPanel_Libraries
+    {
+        order: 1;
+        color: red;
+    }
+    .InstallLibrariesPanel > .InstallLibrariesPanel_Legend { order: 2; }
+    .InstallLibrariesPanel > .InstallLibrariesPanel_Console { order: 3; }
+
     div.scroll {
         margin: 4px, 4px;
         padding: 4px;
         background-color: black;
-        color:white;
+        color: white;
         width: 100%;
         height: 800px;
         overflow-x: hidden;
         overflow-y: auto;
     }
+
+    .labels {
+        float: left;
+        margin: 4px;
+    }
+
+    .smallLabelText {
+        font-size: xx-small;
+    }
+
+    .pipeseparator {
+        color: black;
+    }
 </style>
-<div>
-    <button style="float:right;margin:10px;" @onclick="DeleteInstallation">Delete Installation</button>
-    <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
-    <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
-    <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
-</div>
-<div style="background-color:black;padding:4px;">
-    <div class="scroll">
-        <pre style="color:white;">
+<div class="InstallLibrariesPanel">
+    <div class="InstallLibrariesPanel_Title labels">
+    MODULES
+    </div>
+    <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
+        <div class="labels">OpenCV4Android</div>
+        <div class="labels pipeseparator">|</div>
+        <div class="labels">Android NDK</div>
+        <div class="labels pipeseparator">|</div>
+        <div class="labels">Tesseract</div>
+        <div class="labels pipeseparator">|</div>
+        <div class="labels">OpenALPR</div>
+    </div>
+    <div class="InstallLibrariesPanel_Legend">
+        <div class="labels smallLabelText" style="font-weight:bold;">Legend:</div>
+        <div class="labels smallLabelText" style="color:green;">Installed</div>
+        <div class="labels smallLabelText" style="color:red">Not Installed</div>
+    </div>
+    <div class="InstallLibrariesPanel_Console" style="background-color:black;padding:4px;">
+        <div style="display:inherit">
+            <button style="float:right;margin:10px;" @onclick="DeleteInstallation">Delete Installation</button>
+            <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
+            <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
+            <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+        </div>
+        <div class="scroll">
+            <pre style="color:white;">
     @Message
     </pre>
+        </div>
+        <div style="color:red">@Error</div>
     </div>
-    <div style="color:red">@Error</div>
 </div>
 
 @code {
@@ -75,7 +127,7 @@
         }
         else
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 _dushstaring = DushStar.inactive;
                 await Task.Delay(1500);
@@ -265,11 +317,11 @@
     {
         if (Console == ConsoleManager.DuShStar)
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 _dushstaring = DushStar.inactive;
-                // Error = "'du -sh *' Process Exited.";
-                StateHasChanged();
+            // Error = "'du -sh *' Process Exited.";
+            StateHasChanged();
 
                 await Task.Delay(1000);
                 if (Console == ConsoleManager.DuShStar)
