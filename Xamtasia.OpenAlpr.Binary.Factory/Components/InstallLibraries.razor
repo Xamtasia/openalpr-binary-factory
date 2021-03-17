@@ -85,7 +85,7 @@
         <div style="color:red">@Error</div>
     </div>
 </div>
-<div style="background-color:gray">Debug</div>
+<div style="background-color:gray">@Debug</div>
 
 @code {
 
@@ -144,7 +144,7 @@
 
     #endregion
 
-    public void IsTesseractInstalledProcess()
+    public void GetContainerStateProcess()
     {
         isTesseractInstalledProcess = new Process();
         isTesseractInstalledProcess.EnableRaisingEvents = true;
@@ -550,6 +550,8 @@
         string newJson = "{ \"IsTesseractInstalled\":true,\"IsOpenCV4AndroidInstalled\":true,\"IsAndroidNDKInstalled\":true,\"IsOpenALPRInstalled\":true}";
 
         var newobj = JsonConvert.DeserializeObject<ContainerState>(newJson);
+
+        GetContainerStateProcess();
 
         return base.OnInitializedAsync();
     }
