@@ -296,8 +296,7 @@
         deleteProcess.Exited += new System.EventHandler(DeleteProcess_Exited);
 
         deleteProcess.StartInfo.FileName = "/bin/bash";
-        //deleteProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
-        deleteProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
+        deleteProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
         deleteProcess.StartInfo.UseShellExecute = false;
         deleteProcess.StartInfo.RedirectStandardError = true;
         deleteProcess.StartInfo.RedirectStandardOutput = true;
