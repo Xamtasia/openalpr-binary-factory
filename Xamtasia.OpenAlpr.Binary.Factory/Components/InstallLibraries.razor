@@ -314,8 +314,9 @@
     {
         if (Console == ConsoleManager.DeleteInstallation)
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
+                await GetContainerSettings();
                 Error = "'rm -rf /src/*' Process Exited.";
                 StateHasChanged();
             });
