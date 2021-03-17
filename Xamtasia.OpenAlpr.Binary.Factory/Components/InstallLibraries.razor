@@ -148,23 +148,39 @@
 
     #endregion
 
-    public async Task GetContainerState()
+    async Task GetContainerState()
     {
-        Error = string.Empty;
-        DebugError = string.Empty;
-        GetContainerStateProcess();
+        if (_installing == Installing.inactive)
+        {
+            Console = ConsoleManager.DeleteInstallation;
+            Message = @"User$ rm -rf /src/*
+";
+            Error = string.Empty;
+            GetContainerStateProcess();
+        }
+        else
+        {
+            await InvokeAsync(async () =>
+            {
+                _dushstaring = DushStar.inactive;
+                await Task.Delay(1500);
+                Error = "Cannot Delete until installation is finished installing!";
+                Message = string.Empty;
+                StateHasChanged();
+            });
+        }
     }
 
-    public void GetContainerStateProcess()
+    void GetContainerStateProcess()
     {
         getSystemStateProcess = new Process();
         getSystemStateProcess.EnableRaisingEvents = true;
-        getSystemStateProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetSystemStateProcess_OutputDataReceived);
-        getSystemStateProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetSystemStateProcess_ErrorDataReceived);
-        getSystemStateProcess.Exited += new System.EventHandler(GetSystemStateProcess_Exited);
+        getSystemStateProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetContainerStateProcess_OutputDataReceived);
+        getSystemStateProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetContainerStates_ErrorDataReceived);
+        getSystemStateProcess.Exited += new System.EventHandler(GetContainerState_Exited);
 
         getSystemStateProcess.StartInfo.FileName = "/bin/bash";
-        //getSystemStateProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
+        //deleteProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
         getSystemStateProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
         getSystemStateProcess.StartInfo.UseShellExecute = false;
         getSystemStateProcess.StartInfo.RedirectStandardError = true;
@@ -178,46 +194,45 @@
         //process.WaitForExit();
     }
 
-    async void GetSystemStateProcess_Exited(object sender, EventArgs e)
+    async void GetContainerState_Exited(object sender, EventArgs e)
     {
-        await InvokeAsync(() =>
+        if (Console == ConsoleManager.DeleteInstallation)
         {
-
-            //StateHasChanged();
-        });
-    }
-
-    async void GetSystemStateProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-    {
-        await InvokeAsync(() =>
-        {
-            DebugError = string.Format("Error: {0}", e.Data);
-            //StateHasChanged();
-        });
-    }
-
-    async void GetSystemStateProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-    {
-        await InvokeAsync(() =>
-        {
-            try
+            await InvokeAsync(() =>
             {
-                string data = e.Data;
-
-                //CurrentContainerState = JsonConvert.DeserializeObject<ContainerState>(data);
-
-                Debug = string.Format("Data: {0}", data);
-
+                Error = "'rm -rf /src/*' Process Exited.";
                 StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                Debug = ex.Message;
-                StateHasChanged();
-            }
-        });
+            });
+        }
     }
 
+    async void GetContainerStates_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.DeleteInstallation)
+        {
+            await InvokeAsync(() =>
+            {
+                Error = e.Data;
+                StateHasChanged();
+            });
+        }
+    }
+
+    async void GetContainerStateProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (Console == ConsoleManager.DeleteInstallation)
+        {
+            await InvokeAsync(() =>
+            {
+                string msg = Message;
+                msg += $"{e.Data}\n";
+                Message = msg;
+                StateHasChanged();
+            });
+        }
+    }
+
+    // ------------------------------------------------------------------------------------------
     async Task DeleteInstallation()
     {
         if (_installing == Installing.inactive)
