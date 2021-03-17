@@ -86,10 +86,13 @@
     </div>
 </div>
 <div class="labels" style="background-color:gray">@Debug</div>
+<div class="labels" style="background-color:gray">@DebugError</div>
+
 
 @code {
 
     public string Debug { get; set; }
+    public string DebugError { get; set; }
     // tesseract.installed
 
     public class ContainerState
@@ -144,9 +147,11 @@
 
     #endregion
 
-    public void GetContainerState()
+    public async Task GetContainerState()
     {
         Error = string.Empty;
+        DebugError = string.Empty;
+        await Task.Delay(2000);
         GetContainerStateProcess();
     }
 
@@ -185,8 +190,8 @@
     {
         await InvokeAsync(() =>
         {
-            Debug = "Error: " + e.Data;
-            StateHasChanged();
+            DebugError = string.Format("Error: {0}", e.Data);
+            //StateHasChanged();
         });
     }
 
@@ -200,7 +205,7 @@
 
                 //CurrentContainerState = JsonConvert.DeserializeObject<ContainerState>(data);
 
-                Debug = "Data: "+data;
+                Debug = string.Format("Data: {0}", data);
 
                 StateHasChanged();
             }
