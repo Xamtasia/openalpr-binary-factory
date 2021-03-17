@@ -153,7 +153,7 @@
         isTesseractInstalledProcess.Exited += new System.EventHandler(IsTesseractInstalledProcess_Exited);
 
         isTesseractInstalledProcess.StartInfo.FileName = "/bin/bash";
-        isTesseractInstalledProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
+        isTesseractInstalledProcess.StartInfo.Arguments = $"-c \"/scripts/echotest\"";
         isTesseractInstalledProcess.StartInfo.UseShellExecute = false;
         isTesseractInstalledProcess.StartInfo.RedirectStandardError = true;
         isTesseractInstalledProcess.StartInfo.RedirectStandardOutput = true;
