@@ -150,25 +150,11 @@
 
     async Task GetContainerSettings()
     {
-        if (_installing == Installing.inactive)
-        {
-            //Console = ConsoleManager.DeleteInstallation;
-            Message = @"In Container Settings: 
+        //Console = ConsoleManager.DeleteInstallation;
+        Message = @"In Container Settings: 
 ";
-            Error = string.Empty;
-            DeleteProcess();
-        }
-        else
-        {
-            await InvokeAsync(async () =>
-            {
-                _dushstaring = DushStar.inactive;
-                await Task.Delay(1500);
-                Error = "Cannot Delete until installation is finished installing!";
-                Message = string.Empty;
-                StateHasChanged();
-            });
-        }
+        Error = string.Empty;
+        GetContainerSettingsProcess();
     }
 
     void GetContainerSettingsProcess()
