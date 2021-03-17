@@ -224,14 +224,19 @@
         // this is the fallback working commit
         if (Console == ConsoleManager.DeleteInstallation)
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
-                string msg = Message;
-                msg += $"{e.Data}\n";
-                Message = msg;
-                StateHasChanged();
+                await UpdateSystemState(e.Data);
             });
         }
+    }
+
+    async Task UpdateSystemState(string json)
+    {
+        string msg = Message;
+        msg += $"{e.Data}\n";
+        Message = msg;
+        StateHasChanged();
     }
 
     // ------------------------------------------------------------------------------------------
