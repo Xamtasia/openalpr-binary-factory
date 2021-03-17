@@ -152,7 +152,6 @@
     {
         Error = string.Empty;
         DebugError = string.Empty;
-        await Task.Delay(2000);
         GetContainerStateProcess();
     }
 
@@ -562,8 +561,6 @@
         string newJson = "{ \"IsTesseractInstalled\":true,\"IsOpenCV4AndroidInstalled\":true,\"IsAndroidNDKInstalled\":true,\"IsOpenALPRInstalled\":true}";
 
         var newobj = JsonConvert.DeserializeObject<ContainerState>(newJson);
-
-        GetContainerState();
 
         return base.OnInitializedAsync();
     }
