@@ -234,7 +234,7 @@
     async Task UpdateSystemState(string json)
     {
         string msg = Message;
-        msg += $"{e.Data}\n";
+        msg += $"{json}\n";
         Message = msg;
         StateHasChanged();
     }
