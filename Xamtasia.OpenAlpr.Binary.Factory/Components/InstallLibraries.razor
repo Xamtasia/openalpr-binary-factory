@@ -85,7 +85,7 @@
         <div style="color:red">@Error</div>
     </div>
 </div>
-<div style="background-color:gray">@Debug</div>
+<div class="labels" style="background-color:gray">@Debug</div>
 
 @code {
 
@@ -540,6 +540,7 @@
 
     protected override Task OnInitializedAsync()
     {
+        Debug = "Debug Pane";
         Message = string.Empty;
         Error = string.Empty;
 
