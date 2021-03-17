@@ -78,7 +78,7 @@
             <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
             <button style="float: right;margin: 10px;" @onclick="GetContainerSettings">Check Installed</button>
         </div>
-        <div class="scroll">
+        <div id="InstallLibrariesPanel_Console_ScrollPane" class="scroll">
             <pre style="color:white;">
     @Message
     </pre>
@@ -250,6 +250,14 @@
                 await JavascriptStyleColor("InstallLibrariesPanel_Libraries_Tesseract", "red");
             }
         }
+    }
+
+    async Task JavascriptDivScrollToBottom(string id)
+    {
+        //handleDivScrollToBottom
+        await JS.InvokeVoidAsync(
+            "handleDivScrollToBottom",
+            id);
     }
 
     async Task JavascriptStyleColor(string id, string color)
@@ -586,11 +594,12 @@
     {
         if (Console == ConsoleManager.Installer)
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
                 _installMessage += $"{e.Data}\n";
                 Message = _installMessage;
                 StateHasChanged();
+                await JavascriptDivScrollToBottom("InstallLibrariesPanel_Console_ScrollPane");
             });
         }
     }

@@ -57,6 +57,27 @@
                 // failed
             }
         };
+
+        window.handleDivScrollToBottom = (id) => {
+            if (id != null) {
+                try {
+                    var element = document.getElementById(id);
+                    if (element != null) {
+                        element.scrollTop = element.scrollHeight;
+                    }
+                    else {
+                        // failed
+                    }
+
+                }
+                catch (ex) {
+                    // failed
+                }
+            }
+            else {
+                // failed
+            }
+        };
     </script>
 </head>
 <body>
