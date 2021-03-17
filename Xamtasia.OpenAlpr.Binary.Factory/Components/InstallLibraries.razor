@@ -76,6 +76,7 @@
             <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
             <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
             <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+            <button style="float: right;margin: 10px;" @onclick="GetContainerState()">Check Installed</button>
         </div>
         <div class="scroll">
             <pre style="color:white;">
@@ -560,7 +561,7 @@
 
         var newobj = JsonConvert.DeserializeObject<ContainerState>(newJson);
 
-        GetContainerStateProcess();
+        GetContainerState();
 
         return base.OnInitializedAsync();
     }
