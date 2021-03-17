@@ -76,7 +76,7 @@
             <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
             <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
             <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
-            <button style="float: right;margin: 10px;" @onclick="GetContainerState">Check Installed</button>
+            <button style="float: right;margin: 10px;" @onclick="GetContainerSettings">Check Installed</button>
         </div>
         <div class="scroll">
             <pre style="color:white;">
@@ -149,17 +149,15 @@
 
     #endregion
 
-    async Task GetContainerState()
+    async Task GetContainerSettings()
     {
         if (_installing == Installing.inactive)
         {
             Console = ConsoleManager.DeleteInstallation;
             Message = @"User$ rm -rf /src/*
 ";
-            Debug = string.Empty;
-            DebugError = string.Empty;
             Error = string.Empty;
-            GetContainerStateProcess();
+            DeleteProcess();
         }
         else
         {
@@ -174,16 +172,16 @@
         }
     }
 
-    void GetContainerStateProcess()
+    void GetContainerSettingsProcess()
     {
         getSystemStateProcess = new Process();
         getSystemStateProcess.EnableRaisingEvents = true;
-        getSystemStateProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetContainerStateProcess_OutputDataReceived);
-        getSystemStateProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetContainerStates_ErrorDataReceived);
-        getSystemStateProcess.Exited += new System.EventHandler(GetContainerState_Exited);
+        getSystemStateProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetContainerSettingsProcess_OutputDataReceived);
+        getSystemStateProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(GetContainerSettingsProcess_ErrorDataReceived);
+        getSystemStateProcess.Exited += new System.EventHandler(GetContainerSettingsProcess_Exited);
 
         getSystemStateProcess.StartInfo.FileName = "/bin/bash";
-        //deleteProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
+        //getSystemStateProcess.StartInfo.Arguments = $"-c \"/scripts/deleteinstallation\"";
         getSystemStateProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
         getSystemStateProcess.StartInfo.UseShellExecute = false;
         getSystemStateProcess.StartInfo.RedirectStandardError = true;
@@ -197,7 +195,7 @@
         //process.WaitForExit();
     }
 
-    async void GetContainerState_Exited(object sender, EventArgs e)
+    async void GetContainerSettingsProcess_Exited(object sender, EventArgs e)
     {
         if (Console == ConsoleManager.DeleteInstallation)
         {
@@ -209,28 +207,27 @@
         }
     }
 
-    async void GetContainerStates_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    async void GetContainerSettingsProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
         if (Console == ConsoleManager.DeleteInstallation)
         {
             await InvokeAsync(() =>
             {
-                DebugError = e.Data;
+                Error = e.Data;
                 StateHasChanged();
             });
         }
     }
 
-    async void GetContainerStateProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    async void GetContainerSettingsProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
         if (Console == ConsoleManager.DeleteInstallation)
         {
             await InvokeAsync(() =>
             {
-                string msg = string.Empty;
+                string msg = Message;
                 msg += $"{e.Data}\n";
                 Message = msg;
-                Debug = msg;
                 StateHasChanged();
             });
         }
