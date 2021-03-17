@@ -1,25 +1,32 @@
 ﻿@using System.Diagnostics;
+@using Newtonsoft.Json
+
 
 <style>
 
     .InstallLibrariesPanel {
         display: flex;
-        flex-direction:column;
+        flex-direction: column;
         background-color: lightblue;
     }
 
-    .InstallLibrariesPanel > .InstallLibrariesPanel_Title
-    {
-        order: 0;
-        font-weight:bold;
-    }
-    .InstallLibrariesPanel > .InstallLibrariesPanel_Libraries
-    {
-        order: 1;
-        color: red;
-    }
-    .InstallLibrariesPanel > .InstallLibrariesPanel_Legend { order: 2; }
-    .InstallLibrariesPanel > .InstallLibrariesPanel_Console { order: 3; }
+        .InstallLibrariesPanel > .InstallLibrariesPanel_Title {
+            order: 0;
+            font-weight: bold;
+        }
+
+        .InstallLibrariesPanel > .InstallLibrariesPanel_Libraries {
+            order: 1;
+            color: red;
+        }
+
+        .InstallLibrariesPanel > .InstallLibrariesPanel_Legend {
+            order: 2;
+        }
+
+        .InstallLibrariesPanel > .InstallLibrariesPanel_Console {
+            order: 3;
+        }
 
     div.scroll {
         margin: 4px, 4px;
@@ -47,7 +54,7 @@
 </style>
 <div class="InstallLibrariesPanel">
     <div class="InstallLibrariesPanel_Title labels">
-    MODULES
+        MODULES
     </div>
     <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
         <div class="labels">OpenCV4Android</div>
@@ -78,8 +85,20 @@
         <div style="color:red">@Error</div>
     </div>
 </div>
+<div style="background-color:gray">Debug</div>
 
 @code {
+
+    public string Debug { get; set; }
+    // tesseract.installed
+
+    public class ContainerState
+    {
+        public bool IsTesseractInstalled { get; set; }
+        public bool IsOpenCV4AndroidInstalled { get; set; }
+        public bool IsAndroidNDKInstalled { get; set; }
+        public bool IsOpenALPRInstalled { get; set; }
+    }
 
     enum Installing
     {
@@ -93,9 +112,6 @@
         inactive
     }
 
-    private Installing _installing = Installing.inactive;
-    private DushStar _dushstaring = DushStar.inactive;
-
     enum ConsoleManager
     {
         Installer,
@@ -103,6 +119,11 @@
         Tree,
         DeleteInstallation
     }
+
+    private Installing _installing = Installing.inactive;
+    private DushStar _dushstaring = DushStar.inactive;
+
+    public ContainerState CurrentContainerState { get; set; }
 
     string Message { get; set; }
     string Error { get; set; }
@@ -114,6 +135,79 @@
     Process duShStarProcess = new Process();
     Process treeProcess = new Process();
     Process deleteProcess = new Process();
+
+    #region Is Library Installed
+
+    bool _isTesseractInstalled;
+
+    Process isTesseractInstalledProcess = new Process();
+
+    #endregion
+
+    public void IsTesseractInstalledProcess()
+    {
+        isTesseractInstalledProcess = new Process();
+        isTesseractInstalledProcess.EnableRaisingEvents = true;
+        isTesseractInstalledProcess.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(IsTesseractInstalled_OutputDataReceived);
+        isTesseractInstalledProcess.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(IsTesseractInstalled_ErrorDataReceived);
+        isTesseractInstalledProcess.Exited += new System.EventHandler(IsTesseractInstalledProcess_Exited);
+
+        isTesseractInstalledProcess.StartInfo.FileName = "/bin/bash";
+        isTesseractInstalledProcess.StartInfo.Arguments = $"-c \"/scripts/getsystemstate\"";
+        isTesseractInstalledProcess.StartInfo.UseShellExecute = false;
+        isTesseractInstalledProcess.StartInfo.RedirectStandardError = true;
+        isTesseractInstalledProcess.StartInfo.RedirectStandardOutput = true;
+
+        isTesseractInstalledProcess.Start();
+        isTesseractInstalledProcess.BeginErrorReadLine();
+        isTesseractInstalledProcess.BeginOutputReadLine();
+
+        //below line is optional if we want a blocking call
+        //process.WaitForExit();
+    }
+
+    async void IsTesseractInstalledProcess_Exited(object sender, EventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+
+            //StateHasChanged();
+        });
+    }
+
+    async void IsTesseractInstalled_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+
+            //StateHasChanged();
+        });
+    }
+
+    async void IsTesseractInstalled_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+            try
+            {
+                string data = e.Data;
+#if DEBUG
+                Debug += $"{data}" + @"
+";
+#endif
+                CurrentContainerState = JsonConvert.DeserializeObject<ContainerState>(data);
+
+                Debug = data;
+
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Debug = ex.Message;
+                StateHasChanged();
+            }
+        });
+    }
 
     async Task DeleteInstallation()
     {
@@ -320,8 +414,8 @@
             await InvokeAsync(async () =>
             {
                 _dushstaring = DushStar.inactive;
-            // Error = "'du -sh *' Process Exited.";
-            StateHasChanged();
+                // Error = "'du -sh *' Process Exited.";
+                StateHasChanged();
 
                 await Task.Delay(1000);
                 if (Console == ConsoleManager.DuShStar)
@@ -448,6 +542,14 @@
     {
         Message = string.Empty;
         Error = string.Empty;
+
+        var state = new ContainerState();
+
+        string json = JsonConvert.SerializeObject(state);
+
+        string newJson = "{ \"IsTesseractInstalled\":true,\"IsOpenCV4AndroidInstalled\":true,\"IsAndroidNDKInstalled\":true,\"IsOpenALPRInstalled\":true}";
+
+        var newobj = JsonConvert.DeserializeObject<ContainerState>(newJson);
 
         return base.OnInitializedAsync();
     }
