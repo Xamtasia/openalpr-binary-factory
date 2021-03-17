@@ -559,8 +559,9 @@
     {
         if (Console == ConsoleManager.Installer)
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
+                await GetContainerSettings();
                 _installing = Installing.inactive;
                 _installMessage = string.Empty;
                 Error = "Install Process Exited.";
