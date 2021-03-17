@@ -404,10 +404,11 @@
     {
         if (Console == ConsoleManager.Tree)
         {
-            await InvokeAsync(() =>
+            await InvokeAsync(async() =>
             {
                 Error = e.Data;
                 StateHasChanged();
+                await JavascriptDivScrollToBottom("InstallLibrariesPanel_Console_ScrollPane");
             });
         }
     }
