@@ -191,11 +191,8 @@
             try
             {
                 string data = e.Data;
-#if DEBUG
-                Debug += $"{data}" + @"
-";
-#endif
-                CurrentContainerState = JsonConvert.DeserializeObject<ContainerState>(data);
+
+                //CurrentContainerState = JsonConvert.DeserializeObject<ContainerState>(data);
 
                 Debug = data;
 
