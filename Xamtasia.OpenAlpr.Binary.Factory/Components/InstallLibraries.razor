@@ -144,6 +144,12 @@
 
     #endregion
 
+    public void GetContainerState()
+    {
+        Error = string.Empty;
+        GetContainerStateProcess();
+    }
+
     public void GetContainerStateProcess()
     {
         isTesseractInstalledProcess = new Process();
@@ -179,8 +185,8 @@
     {
         await InvokeAsync(() =>
         {
-
-            //StateHasChanged();
+            Debug = "Error: " + e.Data;
+            StateHasChanged();
         });
     }
 
