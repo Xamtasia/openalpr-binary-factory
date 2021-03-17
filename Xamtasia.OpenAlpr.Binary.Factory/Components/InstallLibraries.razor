@@ -59,11 +59,11 @@
     <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
         <div id="InstallLibrariesPanel_Libraries_OpenCV4Android" class="labels">OpenCV4Android</div>
         <div class="labels pipeseparator">|</div>
-        <div class="labels">Android NDK</div>
+        <div id="InstallLibrariesPanel_Libraries_AndroidNDK" class="labels">Android NDK</div>
         <div class="labels pipeseparator">|</div>
         <div class="labels">Tesseract</div>
         <div class="labels pipeseparator">|</div>
-        <div class="labels">OpenALPR</div>
+        <div id="InstallLibrariesPanel_Libraries_OpenALPR" class="labels">OpenALPR</div>
     </div>
     <div class="InstallLibrariesPanel_Legend">
         <div class="labels smallLabelText" style="font-weight:bold;">Legend:</div>
@@ -219,11 +219,38 @@
 
             if (containerstate.IsAndroidNDKInstalled)
             {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_AndroidNDK", "green");
+            }
+            else
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_AndroidNDK", "red");
+            }
+
+            if (containerstate.IsOpenALPRInstalled)
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenALPR", "green");
+            }
+            else
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenALPR", "red");
+            }
+
+            if (containerstate.IsOpenCV4AndroidInstalled)
+            {
                 await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "green");
             }
             else
             {
                 await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "red");
+            }
+
+            if (containerstate.IsTesseractInstalled)
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_Tesseract", "green");
+            }
+            else
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_Tesseract", "red");
             }
         }
     }
