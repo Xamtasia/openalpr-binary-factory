@@ -213,15 +213,18 @@
 
     async Task UpdateSystemState(string json)
     {
-        var containerstate = JsonConvert.DeserializeObject<ContainerState>(json);
+        if (!string.IsNullOrEmpty(json))
+        {
+            var containerstate = JsonConvert.DeserializeObject<ContainerState>(json);
 
-        if (containerstate.IsAndroidNDKInstalled)
-        {
-            await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "green");
-        }
-        else
-        {
-            await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "red");
+            if (containerstate.IsAndroidNDKInstalled)
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "green");
+            }
+            else
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "red");
+            }
         }
     }
 
