@@ -152,8 +152,8 @@
     {
         if (_installing == Installing.inactive)
         {
-            Console = ConsoleManager.DeleteInstallation;
-            Message = @"User$ rm -rf /src/*
+            //Console = ConsoleManager.DeleteInstallation;
+            Message = @"In Container Settings: 
 ";
             Error = string.Empty;
             DeleteProcess();
@@ -196,37 +196,28 @@
 
     async void GetContainerSettingsProcess_Exited(object sender, EventArgs e)
     {
-        if (Console == ConsoleManager.DeleteInstallation)
+        await InvokeAsync(() =>
         {
-            await InvokeAsync(() =>
-            {
-                Error = "'rm -rf /src/*' Process Exited.";
-                StateHasChanged();
-            });
-        }
+            Error = "'rm -rf /src/*' Process Exited.";
+            StateHasChanged();
+        });
     }
 
     async void GetContainerSettingsProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (Console == ConsoleManager.DeleteInstallation)
+        await InvokeAsync(() =>
         {
-            await InvokeAsync(() =>
-            {
-                Error = e.Data;
-                StateHasChanged();
-            });
-        }
+            Error = e.Data;
+            StateHasChanged();
+        });
     }
 
     async void GetContainerSettingsProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if (Console == ConsoleManager.DeleteInstallation)
+        await InvokeAsync(async () =>
         {
-            await InvokeAsync(async () =>
-            {
-                await UpdateSystemState(e.Data);
-            });
-        }
+            await UpdateSystemState(e.Data);
+        });
     }
 
     async Task TempJavascriptTest()
