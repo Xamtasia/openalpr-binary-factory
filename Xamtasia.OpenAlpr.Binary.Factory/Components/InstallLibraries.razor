@@ -94,7 +94,6 @@
 
     public string Debug { get; set; }
     public string DebugError { get; set; }
-    // tesseract.installed
 
     public class ContainerState
     {
@@ -230,40 +229,31 @@
         }
     }
 
+    async Task TempJavascriptTest()
+    {
+        await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "green");
+    }
+
     async Task UpdateSystemState(string json)
     {
-        // This is the fallback working commit
-        string msg = Message;
-        msg += $"{json}\n";
-        Message = msg;
-
         var containerstate = JsonConvert.DeserializeObject<ContainerState>(json);
 
-        /*
-        await JS.InvokeVoidAsync(
-            "handleInsertInnerHtml",
-            "notesPane",
-            model.notes);
-        */
-        // handleChangeStyleColor
         if (containerstate.IsAndroidNDKInstalled)
         {
-            await JS.InvokeVoidAsync(
-                "handleChangeStyleColor",
-                "InstallLibrariesPanel_Libraries_OpenCV4Android",
-                "green");
+            await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "green");
         }
         else
         {
-            await JS.InvokeVoidAsync(
-                "handleChangeStyleColor",
-                "InstallLibrariesPanel_Libraries_OpenCV4Android",
-                "red");
+            await JavascriptStyleColor("InstallLibrariesPanel_Libraries_OpenCV4Android", "red");
         }
+    }
 
-        Message = JsonConvert.SerializeObject(containerstate);
-
-        StateHasChanged();
+    async Task JavascriptStyleColor(string id, string color)
+    {
+        await JS.InvokeVoidAsync(
+            "handleChangeStyleColor",
+            id,
+            color);
     }
 
     // ------------------------------------------------------------------------------------------
