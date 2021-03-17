@@ -127,6 +127,7 @@
     private Installing _installing = Installing.inactive;
     private DushStar _dushstaring = DushStar.inactive;
 
+    public string CurrentContainerStateJson { get; set; }
     public ContainerState CurrentContainerState { get; set; }
 
     string Message { get; set; }
@@ -226,10 +227,19 @@
         {
             await InvokeAsync(() =>
             {
-                string msg = Message;
+                string msg = string.Empty;
                 msg += $"{e.Data}\n";
                 Message = msg;
                 Debug = msg;
+                CurrentContainerStateJson = msg;
+                try
+                {
+                    var containerState = JsonConvert.DeserializeObject<ContainerState>(CurrentContainerStateJson);
+                }
+                catch(Exception ex)
+                {
+                    DebugError = ex.Message;
+                }
                 StateHasChanged();
             });
         }
