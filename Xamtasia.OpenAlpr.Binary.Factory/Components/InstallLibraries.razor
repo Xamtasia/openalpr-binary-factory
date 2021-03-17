@@ -85,7 +85,7 @@
         <div style="color:red">@Error</div>
     </div>
 </div>
-<div style="background-color:gray">@Debug</div>
+<div class="labels" style="background-color:gray">@Debug</div>
 
 @code {
 
@@ -194,7 +194,7 @@
 
                 //CurrentContainerState = JsonConvert.DeserializeObject<ContainerState>(data);
 
-                Debug = "Data: "+data;
+                Debug = "XData: "+data;
 
                 StateHasChanged();
             }
