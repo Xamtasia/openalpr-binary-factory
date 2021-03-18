@@ -57,6 +57,7 @@
         MODULES
     </div>
     <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
+        <div id="InstallLibrariesPanel_Libraries_Gradle" class="labels">Gradle</div>
         <div id="InstallLibrariesPanel_Libraries_OpenCV4Android" class="labels">OpenCV4Android</div>
         <div class="labels pipeseparator">|</div>
         <div id="InstallLibrariesPanel_Libraries_AndroidNDK" class="labels">Android NDK</div>
@@ -69,6 +70,7 @@
         <div class="labels smallLabelText" style="font-weight:bold;">Legend:</div>
         <div class="labels smallLabelText" style="color:green;">Installed</div>
         <div class="labels smallLabelText" style="color:red">Not Installed</div>
+        <div class="labels smallLabelText" style="color:red">Not Checked</div>
     </div>
     <div class="InstallLibrariesPanel_Console" style="background-color:black;padding:4px;">
         <div style="display:inherit">
@@ -101,6 +103,7 @@
         public bool IsOpenCV4AndroidInstalled { get; set; }
         public bool IsAndroidNDKInstalled { get; set; }
         public bool IsOpenALPRInstalled { get; set; }
+        public bool IsGradleInstalled { get; set; }
     }
 
     enum Installing
@@ -248,6 +251,15 @@
             else
             {
                 await JavascriptStyleColor("InstallLibrariesPanel_Libraries_Tesseract", "red");
+            }
+
+            if (containerstate.IsGradleInstalled)
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_Gradle", "green");
+            }
+            else
+            {
+                await JavascriptStyleColor("InstallLibrariesPanel_Libraries_Gradle", "red");
             }
         }
     }
