@@ -50,33 +50,9 @@
 
     .pipeseparator {
         color: black;
-    }
-
-    .box {
-        display: flex;
-        flex-flow: column;
-        height: 100%;
-        margin:0px;
-    }
-
-        .box .row {
-            border: 1px dotted #0313fc;
-        }
-
-            .box .row.header {
-                flex: 0 1 auto;
-            }
-
-            .box .row.content {
-                flex: 1 1 auto;
-                background-color:black;
-            }
-
-
-   
+    }   
 </style>
-<div class="box"  style="background-color:azure;">
-    <div class="row header">
+    <div class="panel-container_column">
         <div class="InstallLibrariesPanel_Title labels">
             MODULES
         </div>
@@ -108,17 +84,16 @@
 
         </div>
     </div>
-    <div id="InstallLibrariesPanel_Console_ScrollPane" class="row content scroll">
+    <div id="InstallLibrariesPanel_Console_ScrollPane" style="flex: 1 1 auto; background-color:red;">
         <pre style="color:white;">
             @Message
         </pre>
     </div>
-    <div class="row footer">
+    <div style="flex: 0 0 auto">
         <div style="color:red">@Error</div>
         <div class="labels" style="background-color:gray">@Debug</div>
         <div class="labels" style="background-color:gray">@DebugError</div>
     </div>
-</div>
 
 
 @code {

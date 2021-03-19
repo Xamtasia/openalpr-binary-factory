@@ -79,10 +79,27 @@
             }
         };
     </script>
+    <style>
+        .panel-container_column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex-wrap: nowrap;
+            align-items: stretch;
+        }
+        .panel-container_row {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex-wrap: nowrap;
+            align-items: stretch;
+        }
+    </style>
 </head>
-<body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
-
+<body class="panel-container_column">
+    <div>
+        <component type="typeof(App)" render-mode="ServerPrerendered" />
+    </div>
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
             An error has occurred. This application may no longer respond until reloaded.

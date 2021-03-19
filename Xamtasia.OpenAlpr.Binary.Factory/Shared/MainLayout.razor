@@ -1,16 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+<div class="page panel-container_row">
     <div class="sidebar">
         <NavMenu />
     </div>
 
-    <div class="main">
+    <div class="main panel-container_column">
         <div class="top-row px-4">
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 
-        <div class="content px-4" style="background-color:red;height:100%;padding:0px;">
+        <div class="content px-4 panel-container_column" style="background-color:yellow;height:100%">
             @Body
         </div>
     </div>
