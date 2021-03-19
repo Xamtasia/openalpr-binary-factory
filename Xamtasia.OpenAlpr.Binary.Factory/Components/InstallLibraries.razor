@@ -40,7 +40,6 @@
         background-color: black;
         color: white;
         width: 100%;
-        height:800px;
         overflow-x: auto;
         overflow-y: auto;
     }
@@ -57,36 +56,59 @@
     .pipeseparator {
         color: black;
     }
+
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+    }
+
+        .box .row {
+            border: 1px dotted #0313fc;
+        }
+
+            .box .row.header {
+                flex: 0 1 auto;
+            }
+
+            .box .row.content {
+                flex: 1 1 auto;
+            }
 </style>
-<div class="InstallLibrariesPanel">
-    <div class="InstallLibrariesPanel_Title labels">
-        MODULES
-    </div>
-    <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
-        <div id="InstallLibrariesPanel_Libraries_OpenCV4Android" class="labels">OpenCV4Android</div>
-        <div class="labels pipeseparator">|</div>
-        <div id="InstallLibrariesPanel_Libraries_AndroidNDK" class="labels">Android NDK</div>
-        <div class="labels pipeseparator">|</div>
-        <div id="InstallLibrariesPanel_Libraries_Tesseract" class="labels">Tesseract</div>
-        <div class="labels pipeseparator">|</div>
-        <div id="InstallLibrariesPanel_Libraries_OpenALPR" class="labels">OpenALPR</div>
-        <div class="labels pipeseparator">|</div>
-        <div id="InstallLibrariesPanel_Libraries_Gradle" class="labels">Gradle</div>
-    </div>
-    <div class="InstallLibrariesPanel_Legend">
-        <div class="labels smallLabelText" style="font-weight:bold;">Legend:</div>
-        <div class="labels smallLabelText" style="color:green;">Installed</div>
-        <div class="labels smallLabelText" style="color:red">Not Installed</div>
-        <div class="labels smallLabelText" style="color:black">Not Checked</div>
-    </div>
-    <div class="InstallLibrariesPanel_Console" style="background-color:black;padding:4px;">
-        <div>
-            <button style="float:right;margin:10px;" @onclick="DeleteInstallation">Delete Installation</button>
-            <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
-            <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
-            <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
-            <button style="float: right;margin: 10px;" @onclick="GetContainerSettings">Check Installed</button>
+<div class="box">
+    <div class="row header">
+        <div class="InstallLibrariesPanel_Title labels">
+            MODULES
         </div>
+        <div class="InstallLibrariesPanel_Libraries" style="display:inline-block">
+            <div id="InstallLibrariesPanel_Libraries_OpenCV4Android" class="labels">OpenCV4Android</div>
+            <div class="labels pipeseparator">|</div>
+            <div id="InstallLibrariesPanel_Libraries_AndroidNDK" class="labels">Android NDK</div>
+            <div class="labels pipeseparator">|</div>
+            <div id="InstallLibrariesPanel_Libraries_Tesseract" class="labels">Tesseract</div>
+            <div class="labels pipeseparator">|</div>
+            <div id="InstallLibrariesPanel_Libraries_OpenALPR" class="labels">OpenALPR</div>
+            <div class="labels pipeseparator">|</div>
+            <div id="InstallLibrariesPanel_Libraries_Gradle" class="labels">Gradle</div>
+        </div>
+        <div class="InstallLibrariesPanel_Legend">
+            <div class="labels smallLabelText" style="font-weight:bold;">Legend:</div>
+            <div class="labels smallLabelText" style="color:green;">Installed</div>
+            <div class="labels smallLabelText" style="color:red">Not Installed</div>
+            <div class="labels smallLabelText" style="color:black">Not Checked</div>
+        </div>
+        <div class="InstallLibrariesPanel_Console" style="background-color:black;padding:4px;">
+            <div>
+                <button style="float:right;margin:10px;" @onclick="DeleteInstallation">Delete Installation</button>
+                <button style="float:right;margin:10px;" @onclick="ShowTree">Show 'tree /src/mapped/*'</button>
+                <button style="float:right;margin:10px;" @onclick="ShowDuShStar">Show 'du -sh /src/*'</button>
+                <button style="float: right;margin: 10px;" @onclick="InstallLibrariesIntoDirectory">Install Library Sources</button>
+                <button style="float: right;margin: 10px;" @onclick="GetContainerSettings">Check Installed</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="row content">
         <div id="InstallLibrariesPanel_Console_ScrollPane">
             <div class="scroll">
                 <div>
@@ -98,9 +120,11 @@
         </div>
         <div style="color:red">@Error</div>
     </div>
+    <div class="row footer">
+        <div class="labels" style="background-color:gray">@Debug</div>
+        <div class="labels" style="background-color:gray">@DebugError</div>
+    </div>
 </div>
-<div class="labels" style="background-color:gray">@Debug</div>
-<div class="labels" style="background-color:gray">@DebugError</div>
 
 
 @code {
@@ -344,7 +368,7 @@
     {
         if (Console == ConsoleManager.DeleteInstallation)
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 await GetContainerSettings();
                 Error = "'rm -rf /src/*' Process Exited.";
@@ -427,7 +451,7 @@
     {
         if (Console == ConsoleManager.Tree)
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 Error = e.Data;
                 StateHasChanged();
@@ -503,8 +527,8 @@
             await InvokeAsync(async () =>
             {
                 _dushstaring = DushStar.inactive;
-                // Error = "'du -sh *' Process Exited.";
-                StateHasChanged();
+            // Error = "'du -sh *' Process Exited.";
+            StateHasChanged();
 
                 await Task.Delay(1000);
                 if (Console == ConsoleManager.DuShStar)
@@ -592,7 +616,7 @@
     {
         if (Console == ConsoleManager.Installer)
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 await GetContainerSettings();
                 _installing = Installing.inactive;
@@ -619,7 +643,7 @@
     {
         if (Console == ConsoleManager.Installer)
         {
-            await InvokeAsync(async() =>
+            await InvokeAsync(async () =>
             {
                 _installMessage += $"{e.Data}\n";
                 Message = _installMessage;
